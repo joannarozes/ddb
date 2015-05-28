@@ -2,8 +2,10 @@ import json
 import logging
 
 import pika
+from sqlalchemy.exc import  IntegrityError
 
 from db.db import session
+from db.models import Metric, WeatherStation, MetricType
 
 LOG_FORMAT = ('%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
               '-35s %(lineno) -5d: %(message)s')
@@ -240,6 +242,16 @@ class ServerManager(object):
         if self._channel:
             self._channel.close()
 
+    def _try_to_add(self, res):
+        try:
+            # Try to add metric...
+            session.add(Metric)
+        except IntegrityError as e:
+            if not str(e).endswith('is not unique'):
+                # Reraise only if it is not related to the fact that we *have*
+                # the object already.
+                raise
+
     def on_message(self, unused_channel, basic_deliver, properties, body):
         """Invoked by pika when a message is delivered from RabbitMQ. The
         channel is passed for your convenience. The basic_deliver object that
@@ -257,10 +269,35 @@ class ServerManager(object):
         LOGGER.info('Received message # %s from %s: %s',
                     basic_deliver.delivery_tag, properties.app_id, body)
 
-        data = json.loads(body)
+        msg_dict = json.loads(body)
+        action = msg_dict['action']
+        data = msg_dict['data']
 
-        # TODO: Here goes fucking big if-elif-else deciding what to add to the
-        # DB.
+        try:
+            if action == 'add_metric':
+                metric_type = session.query(MetricType).filter_by(
+                    id=data['metric_type_id']).first()
+
+                station = session.query(WeatherStation).filter_by(
+                    id=data['weather_station_id']).first()
+
+                metric = Metric(id=data['id'], value=data['value'],
+                                metric_type=metric_type,
+                                weather_station=station)
+
+                self._try_to_add(metric)
+            elif action == 'add_station':
+                types = session.query(MetricType).filter(
+                    MetricType.id.in_(data['metric_types'])).all()
+
+                station = WeatherStation(id=data['id'], value=data['name'],
+                                         latitude=data['latitude'],
+                                         longitude=data['longitude'],
+                                         metric_types=types)
+
+                self._try_to_add(station)
+        except Exception as e:
+            LOGGER.error('Error %s when processing message.', str(e))
 
         self.acknowledge_message(basic_deliver.delivery_tag)
 
