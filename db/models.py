@@ -22,6 +22,14 @@ class MetricType(Base):
     max_value = Column(Float)
     unit = Column(String(250))
 
+    def __init__(self, id=None, name=None, min_value=None, max_value=None,
+                 unit=None):
+        self.id = id
+        self.name = name
+        self.min_value = min_value
+        self.max_value = max_value
+        self.unit = unit
+
 
 class WeatherStation(Base):
     __tablename__ = 'weather_stations'
@@ -32,6 +40,14 @@ class WeatherStation(Base):
     metric_types = relationship("MetricType", secondary=type_station_table,
                                 backref="weather_stations")
 
+    def __init__(self, id=None, name=None, latitude=None, longitude=None,
+                 metric_types=[]):
+        self.id = id
+        self.name = name
+        self.latitude = latitude
+        self.longitude = longitude
+        self.metric_types = metric_types
+
 
 class Metric(Base):
     __tablename__ = 'metrics'
@@ -41,6 +57,13 @@ class Metric(Base):
     metric_type = relationship(MetricType)
     weather_station_id = Column(String(36), ForeignKey('weather_stations.id'))
     weather_station = relationship(WeatherStation)
+
+    def __init__(self, id=None, value=None, metric_type=None,
+                 weather_station=None):
+        self.id = id
+        self.value = value
+        self.metric_type = metric_type
+        self.weather_station = weather_station
 
 
 # Create an engine that stores data in the local directory's
