@@ -1,0 +1,5 @@
+from sqlalchemy.orm import Session
+
+import models
+
+session = Session(models.engine)

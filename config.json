@@ -4,5 +4,7 @@
   "username": "klops",
   "password": "makaron",
   "exchange": "exchange",
-  "routingKey": "routingKey"
+  "routingKey": "routingKey",
+  "exchangeType": "fanout",
+  "queue": "routingKey"
 }
