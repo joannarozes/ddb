@@ -1,15 +1,20 @@
 - P1:
     - How to make sure we'll synchronize our station after network gets up again?
-        - Field in DB showing if it was sent?
-        - Periodic task fanning out our new rows?
-        - ACKs? Can RabbitMQ do it?
-    - A random metric generator.
-    - Writer to the DB
-        - Need to agree on format between agent and server
-        - ACKs?
+        - Column in DB showing if row was sent. (Michał)
+        - Periodic task fanning out our new rows. (Asia)
+        - Only mark a row as sent if we receive all the ACKs for it...? (Michał&Asia)
+            - We can get number of ACKs needed from the DB probably...
+            - Another idea - if every receiver will have a queue bounded to our
+              fanout exchange - won't RabbitMQ keep it for it?
+                - This depends on the fact if RabbitMQ keeps queue bounded when
+                  client gets disconnected.
+    - A random metric generator. (Maciek)
 
 - P2:
-    - Tooz Service Groups.
-        - We would know how many nodes we have! We can count ACKs.
+    - Removing a station. (Michał&Asia&Maciek)
+        - Just remove it from the DB.
+        - Such operation needs locks to not mess everything up (in case of ACKs).
+    - Tooz Service Groups. (Michał)
+        - We would know how many nodes we have! We can count ACKs (DB solves this too tough).
         - We can know cluster status.
-        - Redis!
+        - Redis is needed for that!
