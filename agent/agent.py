@@ -1,21 +1,21 @@
 import pika
 import json
 
-class Agent:
+class Agent(object):
 
     def __init__(self):
-        config = json.load("config.json")
-        credentials = pika.PlainCredentials(config.username, config.password)
-        parameters = pika.ConnectionParameters(config.broker,
-                                               config.port,
-                                               '/',
-                                               credentials)
+        config = json.load(open("../config.json"))
+        credentials = pika.PlainCredentials(config['username'], config['password'])
+        parameters = pika.ConnectionParameters(host=str(config['broker']),
+                                               port=int(config['port']),
+                                               virtual_host='/',
+                                               credentials=credentials)
         self.connection = pika.BlockingConnection(parameters)
         self.channel = self.connection.channel()
 
     def publish(self, msg):
-        self.channel.basic_publish(self.config.exchange,
-                                   self.config.routingKey,
+        self.channel.basic_publish(self.config['exchange'],
+                                   self.config['routingKey'],
                                    msg,
                                    pika.BasicProperties(
                                        content_type='text/plain',
@@ -23,5 +23,6 @@ class Agent:
                                    )
 
     def __del__(self):
-        self.connection.close()
+        if self.connection:
+            self.connection.close()
 
