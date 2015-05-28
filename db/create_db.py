@@ -3,6 +3,11 @@ from sqlalchemy.orm import Session
 import uuid
 import os
 
+try:
+    os.remove('station_db.db')
+except Exception as ex:
+    pass
+
 # Create all tables in the engine. This is equivalent to "Create Table"
 # statements in raw SQL.
 Base.metadata.create_all(engine)
@@ -29,10 +34,5 @@ def initialize_metric_types():
     session.add_all(metric_types)
 
     session.commit()
-
-try:
-    os.remove('station_db.db')
-except Exception as ex:
-    pass
 
 initialize_metric_types()
