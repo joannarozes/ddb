@@ -1,10 +1,16 @@
 import pika
-
+import json
 
 class Agent:
 
     def __init__(self):
-        self.connection = pika.BlockingConnection()
+        config = json.loads("config.json")
+        credentials = pika.PlainCredentials(config.username, config.password)
+        parameters = pika.ConnectionParameters(config.broker,
+                                               config.port,
+                                               '/',
+                                               credentials)
+        self.connection = pika.BlockingConnection(parameters)
         self.channel = self.connection.channel()
 
     def publish(self, exchange, rkey, msg):

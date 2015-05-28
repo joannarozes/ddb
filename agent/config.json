@@ -1,0 +1,8 @@
+{
+  "broker": "localhost",
+  "port": 5672,
+  "username": "klops",
+  "password": "makaron",
+  "exchange": "exchange",
+  "routingKey": "routingKey"
+}
