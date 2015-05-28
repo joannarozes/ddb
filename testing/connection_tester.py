@@ -6,5 +6,6 @@ if __name__ == "__main__":
 
     try:
         mqtt_agent.publish("makowiec")
+        print "published!"
     except Exception as e:
         print e
