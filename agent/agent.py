@@ -4,7 +4,7 @@ import json
 class Agent:
 
     def __init__(self):
-        config = json.loads("config.json")
+        config = json.load("config.json")
         credentials = pika.PlainCredentials(config.username, config.password)
         parameters = pika.ConnectionParameters(config.broker,
                                                config.port,
@@ -13,9 +13,9 @@ class Agent:
         self.connection = pika.BlockingConnection(parameters)
         self.channel = self.connection.channel()
 
-    def publish(self, exchange, rkey, msg):
-        self.channel.basic_publish(exchange,
-                                   rkey,
+    def publish(self, msg):
+        self.channel.basic_publish(self.config.exchange,
+                                   self.config.routingKey,
                                    msg,
                                    pika.BasicProperties(
                                        content_type='text/plain',
