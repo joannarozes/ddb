@@ -2,7 +2,7 @@ import json
 import logging
 
 import pika
-from sqlalchemy.exc import  IntegrityError
+from sqlalchemy.exc import IntegrityError
 
 from db.db import session
 from db.models import Metric, WeatherStation, MetricType
@@ -245,7 +245,9 @@ class ServerManager(object):
     def _try_to_add(self, res):
         try:
             # Try to add metric...
-            session.add(Metric)
+            session.begin()
+            session.add(res)
+            session.commit()
         except IntegrityError as e:
             if not str(e).endswith('is not unique'):
                 # Reraise only if it is not related to the fact that we *have*
@@ -269,11 +271,11 @@ class ServerManager(object):
         LOGGER.info('Received message # %s from %s: %s',
                     basic_deliver.delivery_tag, properties.app_id, body)
 
-        msg_dict = json.loads(body)
-        action = msg_dict['action']
-        data = msg_dict['data']
-
         try:
+            msg_dict = json.loads(body)
+            action = msg_dict['action']
+            data = msg_dict['data']
+
             if action == 'add_metric':
                 metric_type = session.query(MetricType).filter_by(
                     id=data['metric_type_id']).first()
@@ -290,12 +292,13 @@ class ServerManager(object):
                 types = session.query(MetricType).filter(
                     MetricType.id.in_(data['metric_types'])).all()
 
-                station = WeatherStation(id=data['id'], value=data['name'],
+                station = WeatherStation(id=data['id'], name=data['name'],
                                          latitude=data['latitude'],
                                          longitude=data['longitude'],
                                          metric_types=types)
 
                 self._try_to_add(station)
+            session.commit()
         except Exception as e:
             LOGGER.error('Error %s when processing message.', str(e))
 

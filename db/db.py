@@ -1,5 +1,6 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import sessionmaker
 
 import models
 
-session = Session(models.engine)
+Session = sessionmaker(bind=models.engine, autocommit=True)
+session = Session()
