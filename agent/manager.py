@@ -104,6 +104,8 @@ class AgentManager(object):
         threading.Timer(period, self.fan_out).start()  # Periodic loop.
 
     def run(self):
+        self.connect()
+
         self.add_station()
         self.add_metric() # Periodic.
         self.fan_out() # Perodic.
