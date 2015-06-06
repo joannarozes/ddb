@@ -24,14 +24,16 @@ class WeatherStation(object):
         self.model.longitude = random.uniform(-90.0, 90.0)
         self.model.metric_types = self._available_metric_types()
 
+        self.interval = 5
+
         session.add(self.model)
         session.commit()
 
     def run(self):
         try:
             while True:
-                logging.debug(self)
-                time.sleep(5)
+                self._generate_metrics_data()
+                time.sleep(self.interval)
         except KeyboardInterrupt as keyboard_interrupt:
             logging.info('Stopped.')
 
@@ -40,6 +42,20 @@ class WeatherStation(object):
 
     def _available_metric_types(self):
         return session.query(MetricTypeModel).all()
+
+    def _generate_metrics_data(self):
+        for metric_type in self.model.metric_types:
+            new_metric = MetricModel()
+            new_metric.metric_type = metric_type
+            new_metric.metric_type_id = metric_type.id
+            new_metric.id = str(uuid.uuid4())
+            new_metric.is_sent = False
+            new_metric.value = random.uniform(metric_type.min_value, metric_type.max_value)
+            new_metric.weather_station = self.model
+            new_metric.weather_station_id = self.model.id
+            session.add(new_metric)
+        session.commit()
+        logging.info('Added new metrics')
 
 if __name__ == '__main__':
     ws = WeatherStation()
