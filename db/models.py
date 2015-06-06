@@ -2,6 +2,7 @@ from sqlalchemy import Column, ForeignKey, Table, String, Float, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
+import os
 
 
 Base = declarative_base()
@@ -70,5 +71,7 @@ class Metric(Base):
 
 
 # Create an engine that stores data in the local directory's
-# sqlalchemy_example.db file.
-engine = create_engine('sqlite:///station_db.db')
+db_name = 'station.db'
+dir_path = os.path.dirname(os.path.abspath(__file__))
+db_path = os.path.join(dir_path, db_name)
+engine = create_engine('sqlite:///%s' % db_path)

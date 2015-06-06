@@ -1,12 +1,6 @@
 from models import Base, engine, MetricType
 from sqlalchemy.orm import Session
 import uuid
-import os
-
-try:
-    os.remove('station_db.db')
-except Exception as ex:
-    pass
 
 # Create all tables in the engine. This is equivalent to "Create Table"
 # statements in raw SQL.
