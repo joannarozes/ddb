@@ -19,4 +19,7 @@ while getopts ":d" opt; do
     esac
 done
 
+export PYTHONPATH=$PYTHONPATH:$(pwd)
+
 python db/create_db.py
+python db/populate_db.py
