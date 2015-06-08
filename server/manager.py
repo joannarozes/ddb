@@ -243,16 +243,10 @@ class ServerManager(object):
             self._channel.close()
 
     def _try_to_add(self, res):
-        try:
-            # Try to add metric...
-            session.begin()
-            session.add(res)
-            session.commit()
-        except IntegrityError as e:
-            if not str(e).endswith('is not unique'):
-                # Reraise only if it is not related to the fact that we *have*
-                # the object already.
-                raise
+        # Try to add metric...
+        session.begin()
+        session.merge(res)
+        session.commit()
 
     def on_message(self, unused_channel, basic_deliver, properties, body):
         """Invoked by pika when a message is delivered from RabbitMQ. The
