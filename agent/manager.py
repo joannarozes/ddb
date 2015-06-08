@@ -90,6 +90,7 @@ class AgentManager(object):
         for station in stations:
             session.begin()
             try:
+                LOGGER.debug('Fanning out station %s' % str(station))
                 self.publish_station(station)
                 station.is_sent = True
                 session.commit()
@@ -102,6 +103,7 @@ class AgentManager(object):
         for metric in metrics:
             session.begin()
             try:
+                LOGGER.debug('Fanning out metric %s' % str(metric))
                 self.publish_metric(metric)
                 metric.is_sent = True
                 session.commit()
@@ -114,6 +116,7 @@ class AgentManager(object):
 
     def run(self):
         self.connect()
+
 
 def main():
     logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
