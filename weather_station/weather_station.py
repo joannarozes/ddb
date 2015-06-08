@@ -54,6 +54,7 @@ class WeatherStation(object):
         return session.query(MetricTypeModel).all()
 
     def _generate_metrics_data(self):
+        amount = 0
         for metric_type in self.model.metric_types:
             new_metric = MetricModel()
             new_metric.metric_type = metric_type
@@ -65,8 +66,9 @@ class WeatherStation(object):
             new_metric.weather_station_id = self.model.id
             new_metric.timestamp = datetime.utcnow()
             session.add(new_metric)
+            amount += 1
         session.commit()
-        logging.info('Added new metrics')
+        logging.info('Added new metrics [%s]' % str(amount))
 
 if __name__ == '__main__':
     ws = WeatherStation()
