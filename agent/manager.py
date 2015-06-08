@@ -1,7 +1,6 @@
 import json
 import logging
 import threading
-import time
 import pika
 
 from db.db import session

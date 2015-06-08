@@ -51,7 +51,7 @@ class WeatherStation(Base):
         self.latitude = latitude
         self.longitude = longitude
         self.metric_types = metric_types
-        self.is_sent = 0
+        self.is_sent = is_sent
 
 
 class Metric(Base):
