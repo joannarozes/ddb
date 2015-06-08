@@ -36,15 +36,14 @@ class AgentManager(object):
                 time.sleep(1)
                 continue
 
-
     def stop(self):
         if self.connection:
             self.connection.close()
 
     def _publish(self, msg):
         try:
-            published = self.channel.basic_publish(self.config['exchange'],
-                                       self.config['routingKey'], msg,
+            published = self.channel.basic_publish(self.cfg['exchange'],
+                                       self.cfg['routingKey'], msg,
                                        pika.BasicProperties(
                                            content_type='application/json',
                                            delivery_mode=2),  # Persistent,
