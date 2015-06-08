@@ -22,8 +22,8 @@ class WeatherStation(object):
         self.model.id = str(uuid.uuid5(uuid.NAMESPACE_DNS, self.model.name))
         if not self._exists():
             logging.debug('WS does not exists. Creating new.')
-            self.model.deleted = False
-            self.model.is_sent = False
+            self.model.deleted = 0
+            self.model.is_sent = 0
             self.model.latitude = random.uniform(-90.0, 90.0)
             self.model.longitude = random.uniform(-90.0, 90.0)
             self.model.metric_types = self._available_metric_types()
@@ -59,7 +59,7 @@ class WeatherStation(object):
             new_metric.metric_type = metric_type
             new_metric.metric_type_id = metric_type.id
             new_metric.id = str(uuid.uuid4())
-            new_metric.is_sent = False
+            new_metric.is_sent = 0
             new_metric.value = random.uniform(metric_type.min_value, metric_type.max_value)
             new_metric.weather_station = self.model
             new_metric.weather_station_id = self.model.id

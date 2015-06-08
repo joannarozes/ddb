@@ -45,12 +45,13 @@ class WeatherStation(Base):
                                 backref="weather_stations")
 
     def __init__(self, id=None, name=None, latitude=None, longitude=None,
-                 metric_types=[]):
+                 metric_types=[], is_sent=0):
         self.id = id
         self.name = name
         self.latitude = latitude
         self.longitude = longitude
         self.metric_types = metric_types
+        self.is_sent = 0
 
 
 class Metric(Base):
@@ -65,11 +66,12 @@ class Metric(Base):
     timestamp = Column(DateTime, nullable=False, default=False)
 
     def __init__(self, id=None, value=None, metric_type=None,
-                 weather_station=None):
+                 weather_station=None, is_sent=0):
         self.id = id
         self.value = value
         self.metric_type = metric_type
         self.weather_station = weather_station
+        self.is_sent = 0
 
 
 # Create an engine that stores data in the local directory's

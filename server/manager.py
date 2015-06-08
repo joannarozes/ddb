@@ -273,7 +273,7 @@ class ServerManager(object):
 
                 metric = Metric(id=data['id'], value=data['value'],
                                 metric_type=metric_type,
-                                weather_station=station)
+                                weather_station=station, is_sent=1)
 
                 session.begin()
                 session.merge(metric)
@@ -285,7 +285,7 @@ class ServerManager(object):
                 station = WeatherStation(id=data['id'], name=data['name'],
                                          latitude=data['latitude'],
                                          longitude=data['longitude'],
-                                         metric_types=types)
+                                         metric_types=types, is_sent=1)
 
                 session.begin()
                 session.merge(station)
