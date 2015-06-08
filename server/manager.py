@@ -1,8 +1,8 @@
+import datetime
 import json
 import logging
 
 import pika
-from sqlalchemy.exc import IntegrityError
 
 from db.db import session
 from db.models import Metric, WeatherStation, MetricType
@@ -273,7 +273,9 @@ class ServerManager(object):
 
                 metric = Metric(id=data['id'], value=data['value'],
                                 metric_type=metric_type,
-                                weather_station=station, is_sent=1)
+                                weather_station=station, is_sent=1,
+                                timestamp=datetime.datetime.fromtimestamp(
+                                    data['timestamp']))
 
                 session.begin()
                 session.merge(metric)

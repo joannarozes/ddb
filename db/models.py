@@ -66,12 +66,13 @@ class Metric(Base):
     timestamp = Column(DateTime, nullable=False, default=False)
 
     def __init__(self, id=None, value=None, metric_type=None,
-                 weather_station=None, is_sent=0):
+                 weather_station=None, is_sent=0, timestamp=None):
         self.id = id
         self.value = value
         self.metric_type = metric_type
         self.weather_station = weather_station
         self.is_sent = 0
+        self.timestamp = timestamp
 
 
 # Create an engine that stores data in the local directory's

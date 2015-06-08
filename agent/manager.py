@@ -78,6 +78,7 @@ class AgentManager(object):
                 "value": metric.value,
                 "metric_type_id": metric.metric_type_id,
                 "weather_station_id": metric.weather_station_id,
+                "timestamp": int(metric.timestamp.strftime('%s')),
             }
         }
         msg = json.dumps(msg_dict)
