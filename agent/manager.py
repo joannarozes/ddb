@@ -237,9 +237,6 @@ class AgentManager(object):
 
         threading.Timer(period, self.fan_out).start()  # Periodic loop.
 
-    def run(self):
-        self.connect()
-
 
 def main():
     logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
