@@ -1,8 +1,8 @@
 {
-  "broker": "localhost",
+  "broker": "10.4.128.3",
   "port": 5672,
-  "username": "klops",
-  "password": "makaron",
+  "username": "guest",
+  "password": "guest",
   "exchange": "exchange",
   "routingKey": "routingKey",
   "exchangeType": "fanout",
