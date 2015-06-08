@@ -22,7 +22,7 @@ class AgentManager(object):
             try:
                 parameters = pika.ConnectionParameters(host=str(self.cfg['broker']),
                                                        port=int(self.cfg['port']),
-                                                       vrtual_host='/')
+                                                       virtual_host='/')
                 self.connection = pika.BlockingConnection(parameters)
                 self.channel = self.connection.channel()
 
