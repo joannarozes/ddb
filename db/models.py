@@ -1,4 +1,5 @@
-from sqlalchemy import Column, ForeignKey, Table, String, Float, Boolean, DateTime
+from sqlalchemy import Column, ForeignKey, Table, String, Float, Integer, \
+    DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
@@ -38,8 +39,8 @@ class WeatherStation(Base):
     name = Column(String(250), nullable=False)
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
-    deleted = Column(Boolean, default=False)
-    is_sent = Column(Boolean, default=False)
+    deleted = Column(Integer, default=0)
+    is_sent = Column(Integer, default=0)
     metric_types = relationship("MetricType", secondary=type_station_table,
                                 backref="weather_stations")
 
@@ -56,7 +57,7 @@ class Metric(Base):
     __tablename__ = 'metrics'
     id = Column(String(36), primary_key=True)
     value = Column(Float, nullable=False)
-    is_sent = Column(Boolean, default=False)
+    is_sent = Column(Integer, default=0)
     metric_type_id = Column(String(36), ForeignKey('metric_types.id'))
     metric_type = relationship(MetricType)
     weather_station_id = Column(String(36), ForeignKey('weather_stations.id'))

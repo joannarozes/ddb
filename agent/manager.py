@@ -86,26 +86,26 @@ class AgentManager(object):
     def fan_out(self, period=30):
         LOGGER.debug('Fanning out rows...')
 
-        stations = session.query(WeatherStation).filter_by(is_sent=False).all()
+        stations = session.query(WeatherStation).filter_by(is_sent=0).all()
         for station in stations:
             session.begin()
             try:
                 LOGGER.debug('Fanning out station %s' % str(station))
                 self.publish_station(station)
-                station.is_sent = True
+                station.is_sent = 1
                 session.commit()
             except Exception as e:
                 LOGGER.error('Error %s when processing station.', str(e))
                 session.rollback()
                 raise
 
-        metrics = session.query(Metric).filter_by(is_sent=False).all()
+        metrics = session.query(Metric).filter_by(is_sent=0).all()
         for metric in metrics:
             session.begin()
             try:
                 LOGGER.debug('Fanning out metric %s' % str(metric))
                 self.publish_metric(metric)
-                metric.is_sent = True
+                metric.is_sent = 1
                 session.commit()
             except Exception as e:
                 LOGGER.error('Error %s when processing metric.', str(e))
