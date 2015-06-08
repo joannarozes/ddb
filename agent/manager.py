@@ -1,7 +1,7 @@
 import json
 import logging
 import threading
-
+import time
 import pika
 
 from db.db import session
@@ -17,12 +17,23 @@ class AgentManager(object):
         self.channel = None
         self.cfg = cfg
 
-    def connect(self):
-        parameters = pika.ConnectionParameters(host=str(self.cfg['broker']),
-                                               port=int(self.cfg['port']),
-                                               virtual_host='/')
-        self.connection = pika.BlockingConnection(parameters)
-        self.channel = self.connection.channel()
+    def connect(self, forever=True):
+        while True:
+            try:
+                parameters = pika.ConnectionParameters(host=str(self.cfg['broker']),
+                                                       port=int(self.cfg['port']),
+                                                       vrtual_host='/')
+                self.connection = pika.BlockingConnection(parameters)
+                self.channel = self.connection.channel()
+            except Exception as e:
+                if not forever:
+                    raise
+                LOGGER.error("Connection failed. Trying again...")
+                time.sleep(1)
+                continue
+
+            self.add_metric() # Periodic.
+            self.fan_out() # Perodic.
 
     def stop(self):
         if self.connection:
@@ -30,12 +41,15 @@ class AgentManager(object):
 
     def _publish(self, msg):
         try:
-            self.channel.basic_publish(self.config['exchange'],
+            published = self.channel.basic_publish(self.config['exchange'],
                                        self.config['routingKey'], msg,
                                        pika.BasicProperties(
                                            content_type='application/json',
-                                           delivery_mode=2)  # Persistent
-                                       )
+                                           delivery_mode=2),  # Persistent,
+                                           mandatory=True
+                                      )
+            if not published:
+                raise
         except Exception as e:
             LOGGER.error('Error %s when sending message.', str(e))
             raise
@@ -104,12 +118,8 @@ class AgentManager(object):
         threading.Timer(period, self.fan_out).start()  # Periodic loop.
 
     def run(self):
-        self.connect()
-
         self.add_station()
-        self.add_metric() # Periodic.
-        self.fan_out() # Perodic.
-
+        self.connect()
 
 def main():
     logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
