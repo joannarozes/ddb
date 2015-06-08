@@ -113,7 +113,6 @@ class AgentManager(object):
         threading.Timer(period, self.fan_out).start()  # Periodic loop.
 
     def run(self):
-        self.add_station()
         self.connect()
 
 def main():
