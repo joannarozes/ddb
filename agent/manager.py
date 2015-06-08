@@ -25,6 +25,10 @@ class AgentManager(object):
                                                        vrtual_host='/')
                 self.connection = pika.BlockingConnection(parameters)
                 self.channel = self.connection.channel()
+
+                self.add_metric() # Periodic.
+                self.fan_out() # Perodic.
+
             except Exception as e:
                 if not forever:
                     raise
@@ -32,8 +36,6 @@ class AgentManager(object):
                 time.sleep(1)
                 continue
 
-            self.add_metric() # Periodic.
-            self.fan_out() # Perodic.
 
     def stop(self):
         if self.connection:
@@ -103,6 +105,7 @@ class AgentManager(object):
             except Exception as e:
                 LOGGER.error('Error %s when processing station.', str(e))
                 session.rollback()
+                raise
 
         metrics = session.query(Metric).filter_by(is_sent=False).all()
         for metric in metrics:
@@ -114,6 +117,7 @@ class AgentManager(object):
             except Exception as e:
                 LOGGER.error('Error %s when processing metric.', str(e))
                 session.rollback()
+                raise
 
         threading.Timer(period, self.fan_out).start()  # Periodic loop.
 
