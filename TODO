@@ -5,7 +5,7 @@
         - If every receiver will have a unique queue bounded to our fanout
           exchange - RabbitMQ will make sure of the delivery! (Michał&Asia)
         - Reconnecting agent to RabbitMQ! DB? (Asia)
-    - A random metric generator. (Maciek)
+    - Done: A random metric generator. (Maciek)
 
 - P2:
     - Removing a station. (Michał&Asia&Maciek)
