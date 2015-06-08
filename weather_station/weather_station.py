@@ -64,7 +64,7 @@ class WeatherStation(object):
             new_metric.value = random.uniform(metric_type.min_value, metric_type.max_value)
             new_metric.weather_station = self.model
             new_metric.weather_station_id = self.model.id
-            new_metric.timestamp = datetime.utcnow()
+            new_metric.timestamp = datetime.utcnow().replace(microsecond=0)
             session.add(new_metric)
             amount += 1
         session.commit()
