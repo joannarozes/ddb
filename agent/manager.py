@@ -169,7 +169,7 @@ class AgentManager(object):
                                            mandatory=True
                                       )
             if not published:
-                raise
+                raise Exception('Publish unsuccessful.')
             self._message_number += 1
             self._deliveries.append(self._message_number)
             LOGGER.info('Published message # %i', self._message_number)
