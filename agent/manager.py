@@ -26,8 +26,7 @@ class AgentManager(object):
                 self.connection = pika.BlockingConnection(parameters)
                 self.channel = self.connection.channel()
 
-                self.add_metric() # Periodic.
-                self.fan_out() # Perodic.
+                self.fan_out()  # Perodic.
 
                 break
 
@@ -84,15 +83,6 @@ class AgentManager(object):
         msg = json.dumps(msg_dict)
         self._publish(msg)
 
-    def add_station(self):
-        # TODO(mszankin): This will add our station record to the DB.
-        LOGGER.debug('Adding station...')
-
-    def add_metric(self, period=5):
-        # TODO(mszankin): This will add a new metric to the DB.
-        LOGGER.debug('Adding metric...')
-        threading.Timer(period, self.add_metric).start()  # Periodic loop.
-
     def fan_out(self, period=30):
         LOGGER.debug('Fanning out rows...')
 
@@ -113,7 +103,7 @@ class AgentManager(object):
             session.begin()
             try:
                 self.publish_metric(metric)
-                station.is_sent = True
+                metric.is_sent = True
                 session.commit()
             except Exception as e:
                 LOGGER.error('Error %s when processing metric.', str(e))
