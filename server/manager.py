@@ -242,12 +242,6 @@ class ServerManager(object):
         if self._channel:
             self._channel.close()
 
-    def _try_to_add(self, res):
-        # Try to add metric...
-        session.begin()
-        session.merge(res)
-        session.commit()
-
     def on_message(self, unused_channel, basic_deliver, properties, body):
         """Invoked by pika when a message is delivered from RabbitMQ. The
         channel is passed for your convenience. The basic_deliver object that
@@ -281,7 +275,7 @@ class ServerManager(object):
                                 metric_type=metric_type,
                                 weather_station=station)
 
-                self._try_to_add(metric)
+                session.merge(metric)
             elif action == 'add_station':
                 types = session.query(MetricType).filter(
                     MetricType.id.in_(data['metric_types'])).all()
@@ -291,7 +285,7 @@ class ServerManager(object):
                                          longitude=data['longitude'],
                                          metric_types=types)
 
-                self._try_to_add(station)
+                session.merge(station)
             session.commit()
         except Exception as e:
             LOGGER.error('Error %s when processing message.', str(e))
