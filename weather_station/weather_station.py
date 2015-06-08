@@ -15,19 +15,28 @@ logging.basicConfig(format=LOG_FORMAT, level=LOG_LEVEL)
 class WeatherStation(object):
 
     def __init__(self):
+        self.interval = 5
         self.model = WeatherStationModel()
         self.model.name = 'ws_%s' % socket.gethostname()
-        self.model.deleted = False
         self.model.id = str(uuid.uuid5(uuid.NAMESPACE_DNS, self.model.name))
-        self.model.is_sent = False
-        self.model.latitude = random.uniform(-90.0, 90.0)
-        self.model.longitude = random.uniform(-90.0, 90.0)
-        self.model.metric_types = self._available_metric_types()
+        if not self._exists():
+            logging.debug('WS does not exists. Creating new.')
+            self.model.deleted = False
+            self.model.is_sent = False
+            self.model.latitude = random.uniform(-90.0, 90.0)
+            self.model.longitude = random.uniform(-90.0, 90.0)
+            self.model.metric_types = self._available_metric_types()
+            session.merge(self.model)
+            session.commit()
+        else:
+            logging.debug('WS already exists. Doing nothing.')
 
-        self.interval = 5
-
-        session.add(self.model)
-        session.commit()
+    def _exists(self):
+        weather_stations = session.query(WeatherStationModel).filter_by(id=self.model.id).all()
+        if len(weather_stations) == 1:
+            return True
+        else:
+            return False
 
     def run(self):
         try:
