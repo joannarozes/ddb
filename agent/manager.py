@@ -161,15 +161,12 @@ class AgentManager(object):
 
     def _publish(self, msg):
         try:
-            published = self._channel.basic_publish(self.cfg['exchange'],
+            self._channel.basic_publish(self.cfg['exchange'],
                                        self.cfg['routingKey'], msg,
                                        pika.BasicProperties(
                                            content_type='application/json',
-                                           delivery_mode=2),  # Persistent,
-                                           mandatory=True
+                                           delivery_mode=2)  # Persistent,
                                       )
-            if not published:
-                raise Exception('Publish unsuccessful.')
             self._message_number += 1
             self._deliveries.append(self._message_number)
             LOGGER.info('Published message # %i', self._message_number)
