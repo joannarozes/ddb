@@ -71,7 +71,7 @@ class Metric(Base):
         self.value = value
         self.metric_type = metric_type
         self.weather_station = weather_station
-        self.is_sent = 0
+        self.is_sent = is_sent
         self.timestamp = timestamp
 
 
