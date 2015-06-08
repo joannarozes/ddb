@@ -1,6 +1,7 @@
 import datetime
 import json
 import logging
+import socket
 
 import pika
 
@@ -27,7 +28,7 @@ class ServerManager(object):
         self._port = cfg['port']
         self._exchange = str(cfg['exchange'])
         self._exchange_type = str(cfg['exchangeType'])
-        self._queue = str(cfg['queue'])
+        self._queue = str(cfg['queue']) % socket.gethostname()
         self._routing_key = str(cfg['routingKey'])
 
     def connect(self):

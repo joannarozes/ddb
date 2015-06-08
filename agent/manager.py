@@ -11,6 +11,7 @@ LOG_FORMAT = ('%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
               '-35s %(lineno) -5d: %(message)s')
 LOGGER = logging.getLogger(__name__)
 
+
 class AgentManager(object):
     def __init__(self, cfg):
         self._connection = None
@@ -97,22 +98,6 @@ class AgentManager(object):
 
     def on_exchange_declareok(self, unused_frame):
         LOGGER.info('Exchange declared')
-        self.setup_queue(self.QUEUE)
-
-    def setup_queue(self, queue_name):
-        LOGGER.info('Declaring queue %s', queue_name)
-        self._channel.queue_declare(self.on_queue_declareok, queue_name)
-
-    def on_queue_declareok(self, method_frame):
-        LOGGER.info('Binding %s to %s with %s', self.EXCHANGE, self.QUEUE, self.ROUTING_KEY)
-        self._channel.queue_bind(self.on_bindok, self.QUEUE, self.EXCHANGE, self.ROUTING_KEY)
-
-    def on_bindok(self, unused_frame):
-        LOGGER.info('Queue bound')
-        self.start_publishing()
-
-    def start_publishing(self):
-        LOGGER.info('Issuing consumer related RPC commands')
         self.enable_delivery_confirmations()
         self.fan_out()
 
@@ -130,7 +115,6 @@ class AgentManager(object):
                     '%i were acked and %i were nacked',
                     self._message_number, len(self._deliveries),
                     self._acked, self._nacked)
-
 
     def close_channel(self):
         LOGGER.info('Closing the channel')
@@ -162,8 +146,8 @@ class AgentManager(object):
     def _publish(self, msg):
         try:
             self._channel.basic_publish(self.cfg['exchange'],
-                                       self.cfg['routingKey'], msg,
-                                       pika.BasicProperties(
+                                        self.cfg['routingKey'], msg,
+                                        pika.BasicProperties(
                                            content_type='application/json',
                                            delivery_mode=2)  # Persistent,
                                       )

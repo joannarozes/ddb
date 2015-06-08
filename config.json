@@ -4,7 +4,7 @@
   "username": "guest",
   "password": "guest",
   "exchange": "exchange",
-  "routingKey": "routingKey",
+  "routingKey": "metrics",
   "exchangeType": "fanout",
-  "queue": "routingKey"
+  "queue": "metrics.%s"
 }
