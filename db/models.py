@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Table, String, Float, Boolean
+from sqlalchemy import Column, ForeignKey, Table, String, Float, Boolean, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
@@ -61,6 +61,7 @@ class Metric(Base):
     metric_type = relationship(MetricType)
     weather_station_id = Column(String(36), ForeignKey('weather_stations.id'))
     weather_station = relationship(WeatherStation)
+    timestamp = Column(DateTime, nullable=False, default=False)
 
     def __init__(self, id=None, value=None, metric_type=None,
                  weather_station=None):

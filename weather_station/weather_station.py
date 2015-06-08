@@ -5,6 +5,7 @@ import uuid
 import random
 from db.models import WeatherStation as WeatherStationModel, MetricType as MetricTypeModel, Metric as MetricModel
 from db.create_db import session
+from datetime import datetime
 
 
 LOG_FORMAT = ('%(levelname) -5s %(asctime)s %(name) -10s %(funcName) -5s %(lineno) -5d: %(message)s')
@@ -62,6 +63,7 @@ class WeatherStation(object):
             new_metric.value = random.uniform(metric_type.min_value, metric_type.max_value)
             new_metric.weather_station = self.model
             new_metric.weather_station_id = self.model.id
+            new_metric.timestamp = datetime.now()
             session.add(new_metric)
         session.commit()
         logging.info('Added new metrics')
