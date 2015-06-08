@@ -275,7 +275,9 @@ class ServerManager(object):
                                 metric_type=metric_type,
                                 weather_station=station)
 
+                session.begin()
                 session.merge(metric)
+                session.commit()
             elif action == 'add_station':
                 types = session.query(MetricType).filter(
                     MetricType.id.in_(data['metric_types'])).all()
@@ -285,8 +287,9 @@ class ServerManager(object):
                                          longitude=data['longitude'],
                                          metric_types=types)
 
+                session.begin()
                 session.merge(station)
-            session.commit()
+                session.commit()
         except Exception as e:
             LOGGER.error('Error %s when processing message.', str(e))
 
