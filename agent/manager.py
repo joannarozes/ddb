@@ -29,6 +29,8 @@ class AgentManager(object):
                 self.add_metric() # Periodic.
                 self.fan_out() # Perodic.
 
+                break
+
             except Exception as e:
                 if not forever:
                     raise
