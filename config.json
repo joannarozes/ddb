@@ -1,10 +1,11 @@
 {
-  "broker": "10.4.128.3",
+  "broker": "localhost",
   "port": 5672,
   "username": "guest",
   "password": "guest",
   "exchange": "exchange",
   "routingKey": "metrics",
   "exchangeType": "fanout",
-  "queue": "metrics.%s"
+  "queue": "metrics.%s",
+  "fanout_interval": 5
 }

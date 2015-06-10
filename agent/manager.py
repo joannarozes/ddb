@@ -98,7 +98,7 @@ class AgentManager(object):
     def on_exchange_declareok(self, unused_frame):
         LOGGER.info('Exchange declared')
         self.enable_delivery_confirmations()
-        self.fan_out()
+        self.fan_out(self.cfg['fanout_interval'])
 
     def on_delivery_confirmation(self, method_frame):
         confirmation_type = method_frame.method.NAME.split('.')[1].lower()
@@ -215,7 +215,7 @@ class AgentManager(object):
                 session.rollback()
                 raise
 
-        threading.Timer(period, self.fan_out).start()  # Periodic loop.
+        threading.Timer(period, self.fan_out, [period]).start()  # Periodic loop.
 
 
 def main():
