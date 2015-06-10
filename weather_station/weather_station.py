@@ -26,7 +26,7 @@ class WeatherStation(object):
             self.model.deleted = 0
             self.model.is_sent = 0
             self.model.latitude = float("{0:.4f}".format(random.uniform(51.0, 54.0)))
-            self.model.longitude = float("{0:.4f}".format(random.uniform(15.0, 25.0)))
+            self.model.longitude = float("{0:.4f}".format(random.uniform(15.0, 23.0)))
             self.model.metric_types = self._available_metric_types()
             logging.debug('WS does not exists. Creating new: %s @ (%s N, %s E)' % (self.model.name,
                                                                                    self.model.latitude,
