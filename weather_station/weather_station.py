@@ -35,13 +35,11 @@ class WeatherStation(object):
             session.commit()
         else:
             logging.debug('WS already exists. Doing nothing.')
+            self.model = session.query(WeatherStationModel).filter_by(id=self.model.id).one()
 
     def _exists(self):
         weather_stations = session.query(WeatherStationModel).filter_by(id=self.model.id).all()
-        if len(weather_stations) == 1:
-            return True
-        else:
-            return False
+        return len(weather_stations) == 1
 
     def run(self):
         try:
